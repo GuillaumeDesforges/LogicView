@@ -124,7 +124,19 @@ class Proposition(ABC):
     # must not be overwritten
     def to_cnf(self):
         # build CNF table as described before _build_cnf declaration above
-        cnf_table = [set(t) for t in self._build_cnf()]
+        cnf_table = self._get_cnf_table()
+        return Proposition._from_cnf_table(cnf_table)
+
+    # construct a 2 depth list : first layers for And, second layer for Or
+    # this first allows for easier concatenations
+    def _build_cnf(self):
+        print("WARNING : No local CNF defined for class", self.__class__.__name__)
+        return [[self]]
+
+    def _get_cnf_table(self):
+        return [list(set(t)) for t in self._build_cnf()]
+
+    def _from_cnf_table(cnf_table):
         # little helper for merging (merge Ors then Ands the same way...)
         def merge_to_prop_helper(t, c):
             prop = t.pop()
@@ -132,16 +144,10 @@ class Proposition(ABC):
                 prop = c(prop, k)
             return prop
         # merges
-        ors_list = set([merge_to_prop_helper(t, Or) for t in cnf_table])
-        prop = merge_to_prop_helper(ors_list, And)
+        ors_list = set([merge_to_prop_helper(t, Or) for t in cnf_table if len(t) > 0])
+        prop = merge_to_prop_helper(ors_list, And) if len(ors_list) > 0 else T
         # return result
         return prop
-
-    # construct a 2 depth list : first layers for And, second layer for Or
-    # this first allows for easier concatenations
-    def _build_cnf(self):
-        print("WARNING : No local CNF defined for class", self.__class__.__name__)
-        return [[self]]
 
     # in most case, should NOT be overwritten
     def __str__(self):

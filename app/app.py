@@ -11,6 +11,13 @@ class Application():
         self.app = QApplication([])
         self.defaultWidth = 800
         self.defaultHeight = 500
+        self.listOperationsOptions = {
+            'tautology': "Tautology",
+            'unitpropagation': "Unit propagation",
+            'purlitteralelimination': "Pur litteral elimination",
+            'assigntrue': "Assign true",
+            'assignfalse': "Assign false"
+        }
         self.initGui()
         self.controller = Controller(self)
         self.controller.bind()
@@ -21,7 +28,7 @@ class Application():
         self.upperPanel = QHBoxLayout()
         self.propositionInput = QLineEdit()
         self.buttonParse = QPushButton('Parse')
-        self.buttonReset = QPushButton('Reset')
+        self.buttonReset = QPushButton('Clear')
         self.upperPanel.addWidget(self.propositionInput)
         self.upperPanel.addWidget(self.buttonParse)
         self.upperPanel.addWidget(self.buttonReset)
@@ -32,15 +39,13 @@ class Application():
 
         self.lowerPanel = QHBoxLayout()
         self.listOperations = QComboBox()
-        self.listOperationsOptions = [
-            "Tautology", "Unit propagation", "Pur litteral elimination",
-            "Assign true", "Assign false"
-        ]
-        self.listOperations.addItems(self.listOperationsOptions)
+        listOperationsOptions = [val for (k, val) in self.listOperationsOptions.items()]
+        self.listOperations.addItems(listOperationsOptions)
         self.listOperations.setEnabled(False)
         self.listVariables = QComboBox()
         self.listVariables.setEnabled(False)
         self.buttonApply = QPushButton('Apply')
+        self.buttonApply.setEnabled(False)
         self.lowerPanel.addWidget(self.listOperations)
         self.lowerPanel.addWidget(self.listVariables)
         self.lowerPanel.addWidget(self.buttonApply)
@@ -62,18 +67,21 @@ class Application():
         msg.setWindowTitle("Error !")
         msg.exec_()
 
-    def clearMiddle(self, proposition):
+    def clearMiddle(self):
         self.middleArea.clear()
+
+    def _printProposition(self, proposition):
         self.middleArea.insertPlainText(str(proposition)+"\n")
 
     def updatePropositionView(self, proposition):
-        self.clearMiddle(proposition)
+        self._printProposition(proposition)
         self.listOperations.setEnabled(True)
         self.listVariables.setEnabled(True)
         var_names = proposition.list_var_names()
         self.listVariables.clear()
         self.listVariables.setEnabled(True)
         self.listVariables.addItems(var_names)
+        self.buttonApply.setEnabled(True)
 
     def start(self):
         sys.exit(self.app.exec_())
