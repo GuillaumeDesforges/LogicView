@@ -23,7 +23,7 @@ class Application():
         self.upperPanel = QHBoxLayout()
         self.propositionInput = QLineEdit()
         self.buttonParse = QPushButton(lang_ui['parse'])
-        self.buttonReset = QPushButton(lang_ui['previous'])
+        self.buttonReset = QPushButton(lang_ui['clear'])
         self.upperPanel.addWidget(self.propositionInput)
         self.upperPanel.addWidget(self.buttonParse)
         self.upperPanel.addWidget(self.buttonReset)

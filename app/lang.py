@@ -10,6 +10,11 @@ lang_ui = {
     'title': "LogicView",
     'error': "Error !",
     'parse': "Parse",
-    'previous': "Previous",
+    'clear': "Clear",
     'apply': "Apply"
+}
+
+lang_error = {
+    'input_empty': "Type an expression to parse.\nExample : And(Or(Not(A), B))",
+    'history_empty': "Can't go further in the history..."
 }
