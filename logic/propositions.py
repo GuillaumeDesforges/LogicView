@@ -74,7 +74,9 @@ class Proposition(ABC):
             # explore those subtrees, get results
             sub_var_names = [arg.list_var_names() for arg in args]
             # concatenation of those results into a 1D list
-            return list(chain(*(sub_var_name for sub_var_name in sub_var_names)))
+            merged_names = chain(*(sub_var_name for sub_var_name in sub_var_names))
+            unique_names = list(set(list(merged_names)))
+            return sorted(unique_names)
 
     def search_counter_example(self):
         var_names = self.list_var_names()
@@ -125,29 +127,25 @@ class Proposition(ABC):
     def to_cnf(self):
         # build CNF table as described before _build_cnf declaration above
         cnf_table = self._get_cnf_table()
-        return Proposition._from_cnf_table(cnf_table)
+        return from_cnf_table(cnf_table)
 
     # construct a 2 depth list : first layers for And, second layer for Or
+    # describing cnf locally in the tree
     # this first allows for easier concatenations
     def _build_cnf(self):
         print("WARNING : No local CNF defined for class", self.__class__.__name__)
         return [[self]]
 
+    # get cnf table without duplicates
     def _get_cnf_table(self):
-        return [list(set(t)) for t in self._build_cnf()]
-
-    def _from_cnf_table(cnf_table):
-        # little helper for merging (merge Ors then Ands the same way...)
-        def merge_to_prop_helper(t, c):
-            prop = t.pop()
-            for k in t:
-                prop = c(prop, k)
-            return prop
-        # merges
-        ors_list = set([merge_to_prop_helper(t, Or) for t in cnf_table if len(t) > 0])
-        prop = merge_to_prop_helper(ors_list, And) if len(ors_list) > 0 else T
-        # return result
-        return prop
+        table = [list(set(t)) for t in self._build_cnf()]
+        table_str = [sorted([str(p) for p in t]) for t in table]
+        p_table, s_table = [], []
+        for (t, s) in zip(table, table_str):
+            if not s in s_table:
+                p_table.append(t)
+                s_table.append(s)
+        return p_table
 
     # in most case, should NOT be overwritten
     def __str__(self):
@@ -479,6 +477,18 @@ def test_theorem_file(path):
                 print(e)
             print()
 
+def from_cnf_table(cnf_table):
+    # little helper for merging (merge Ors then Ands the same way...)
+    def merge_to_prop_helper(t, c):
+        prop = t.pop()
+        for k in t:
+            prop = c(prop, k)
+        return prop
+    # merges
+    ors_list = set([merge_to_prop_helper(t, Or) for t in cnf_table if len(t) > 0])
+    prop = merge_to_prop_helper(ors_list, And) if len(ors_list) > 0 else T
+    # return result
+    return prop
 
 # Main script for demo purpose
 if __name__ == "__main__":

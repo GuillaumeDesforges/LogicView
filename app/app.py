@@ -3,6 +3,7 @@
 import sys
 from PyQt4.QtGui import *
 from app.controller import Controller
+from app.lang import *
 
 # mixing the Application wrapper with the View
 # so Controller is stored in Application
@@ -11,13 +12,7 @@ class Application():
         self.app = QApplication([])
         self.defaultWidth = 800
         self.defaultHeight = 500
-        self.listOperationsOptions = {
-            'tautology': "Tautology",
-            'unitpropagation': "Unit propagation",
-            'purlitteralelimination': "Pur litteral elimination",
-            'assigntrue': "Assign true",
-            'assignfalse': "Assign false"
-        }
+        self.listOperationsOptions = sorted([val for (key, val) in lang_operations.items()])
         self.initGui()
         self.controller = Controller(self)
         self.controller.bind()
@@ -28,7 +23,7 @@ class Application():
         self.upperPanel = QHBoxLayout()
         self.propositionInput = QLineEdit()
         self.buttonParse = QPushButton('Parse')
-        self.buttonReset = QPushButton('Clear')
+        self.buttonReset = QPushButton('Previous')
         self.upperPanel.addWidget(self.propositionInput)
         self.upperPanel.addWidget(self.buttonParse)
         self.upperPanel.addWidget(self.buttonReset)
@@ -39,8 +34,7 @@ class Application():
 
         self.lowerPanel = QHBoxLayout()
         self.listOperations = QComboBox()
-        listOperationsOptions = [val for (k, val) in self.listOperationsOptions.items()]
-        self.listOperations.addItems(listOperationsOptions)
+        self.listOperations.addItems(self.listOperationsOptions)
         self.listOperations.setEnabled(False)
         self.listVariables = QComboBox()
         self.listVariables.setEnabled(False)
