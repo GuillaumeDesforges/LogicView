@@ -22,8 +22,8 @@ class Application():
 
         self.upperPanel = QHBoxLayout()
         self.propositionInput = QLineEdit()
-        self.buttonParse = QPushButton('Parse')
-        self.buttonReset = QPushButton('Previous')
+        self.buttonParse = QPushButton(lang_ui['parse'])
+        self.buttonReset = QPushButton(lang_ui['previous'])
         self.upperPanel.addWidget(self.propositionInput)
         self.upperPanel.addWidget(self.buttonParse)
         self.upperPanel.addWidget(self.buttonReset)
@@ -38,7 +38,7 @@ class Application():
         self.listOperations.setEnabled(False)
         self.listVariables = QComboBox()
         self.listVariables.setEnabled(False)
-        self.buttonApply = QPushButton('Apply')
+        self.buttonApply = QPushButton(lang_ui['apply'])
         self.buttonApply.setEnabled(False)
         self.lowerPanel.addWidget(self.listOperations)
         self.lowerPanel.addWidget(self.listVariables)
@@ -51,14 +51,14 @@ class Application():
 
         self.window.setLayout(self.mainPanel)
         self.window.resize(self.defaultWidth, self.defaultHeight)
-        self.window.setWindowTitle('LogicView')
+        self.window.setWindowTitle(lang_ui['title'])
         self.window.show()
 
     def showError(self, e):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
         msg.setText(str(e))
-        msg.setWindowTitle("Error !")
+        msg.setWindowTitle(lang_ui['error'])
         msg.exec_()
 
     def clearMiddle(self):
