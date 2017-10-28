@@ -515,7 +515,7 @@ if __name__ == "__main__":
     print(AorB, True, AorB.evaluate(test)) # ok
 
     not_AandB = Not(AandB)
-    print(not_AandB, True, not_A2andB.evaluate(test)) # ok
+    print(not_AandB, True, not_AandB.evaluate(test)) # ok
 
     prop1 = Not(And(A, Not(B)))
     print(prop1, False, prop1.evaluate(test)) # ok
@@ -548,7 +548,7 @@ if __name__ == "__main__":
     prop6 = And(A, T)
     prop6_s = prop6.simplify()
     print(prop6, "~>", prop6_s)
-    prop7 = Equivalent(A, F())
+    prop7 = Equivalent(A, F)
     prop7_s = prop7.simplify()
     print(prop7, "~>", prop7_s)
     print("Done", end="\n\n")
